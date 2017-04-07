@@ -1,11 +1,15 @@
 require('es6-promise').polyfill()
 require('isomorphic-fetch')
 
-var express = require('express')
-var app = express()
+const express = require('express')
+const app = express()
+
+const googleApiUrl = 'https://www.googleapis.com/youtube/v3/search'
+const apiKey = process.env.GOOGLE_API_KEY
+const youtubeVideoParams = `key=${apiKey}&channelId=UCOHAJNSpYjS9_Hdho3LS7Fw&part=id,snippet&order=date&maxResults=20`
 
 app.get('/video/list', function (req, res) {
-  fetch('https://www.googleapis.com/youtube/v3/search?key=AIzaSyBqWHIRiPvMUp_74kvl29fT28BdOkByKl4&channelId=UCOHAJNSpYjS9_Hdho3LS7Fw&part=id,snippet&order=date&maxResults=20')
+  fetch(`${googleApiUrl}?${youtubeVideoParams}`)
   	.then(response => {
   		return response.json()
   	})
