@@ -1,0 +1,21 @@
+{
+  "name": "pakistanjs.backend",
+  "version": "1.0.0",
+  "description": "backend for pakistanjs.com",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PakistanJs/pakistanjs.backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PakistanJs/pakistanjs.backend/issues"
+  },
+  "homepage": "https://github.com/PakistanJs/pakistanjs.backend#readme",
+  "dependencies": {
+    "es6-promise": "^4.1.0",
+    "express": "^4.15.2",
+    "isomorphic-fetch": "^2.2.1"
+  }
+}
