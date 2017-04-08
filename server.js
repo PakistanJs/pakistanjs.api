@@ -2,7 +2,10 @@ require('es6-promise').polyfill()
 require('isomorphic-fetch')
 
 const express = require('express')
+const cors = require('cors')
 const app = express()
+
+app.use(cors())
 
 const googleApiUrl = 'https://www.googleapis.com/youtube/v3/search'
 const apiKey = process.env.GOOGLE_API_KEY
@@ -17,9 +20,9 @@ app.get('/video/list', function (req, res) {
   		const videos = response.items
   			.filter(({ id }) => id.kind === "youtube#video")
   			.map(({ id, snippet }) => ({
-  				id: id.videoId,
+  				videoUrl: `https://www.youtube.com/embed/${id.videoId}`,
   				title: snippet.title,
-  				description: snippet.description
+  				desc: snippet.description
   			}))
 
   		res.send(videos)
