@@ -28,6 +28,7 @@ app.get('/playlists', function (req, res) {
 					title: snippet.title,
 					desc: snippet.description
 				}))
+				.reverse()
 
 			res.send(playlists)
 	})
@@ -35,8 +36,6 @@ app.get('/playlists', function (req, res) {
 
 app.get('/:playlistId/list', function (req, res) {
 	const { playlistId } = req.params
-
-	console.log(playlistId);
 
 	fetch(`${googleApiUrl}playlistItems?${youtubeVideoParams}&playlistId=${playlistId}`)
 		.then(response => {
