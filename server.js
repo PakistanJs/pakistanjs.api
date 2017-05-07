@@ -42,12 +42,10 @@ app.get('/:playlistId/list', function (req, res) {
 			return response.json()
 		})
 		.then(response => {
-			console.log(response);
-			// res.send(response)
 			const videos = response.items
 				.filter(({ snippet }) => snippet.resourceId.kind === "youtube#video")
 				.map(({ id, snippet }) => ({
-					videoUrl: `https://www.youtube.com/embed/${snippet.resourceId.videoId}`,
+					videoUrl: `https://www.youtube.com/embed/${snippet.resourceId.videoId}?theme=light&color=white&showinfo=0`,
 					title: snippet.title,
 					desc: snippet.description
 				}))
