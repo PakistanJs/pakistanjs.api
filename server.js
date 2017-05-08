@@ -2,6 +2,7 @@ require('es6-promise').polyfill()
 require('isomorphic-fetch')
 
 const express = require('express')
+const compression = require('compression')
 const cors = require('cors')
 const redis = require('redis')
 
@@ -21,6 +22,7 @@ const cacheMiddleware = (req, res, next) => {
 
 
 app.use(cors())
+app.use(compression())
 
 const googleApiUrl = 'https://www.googleapis.com/youtube/v3/'
 const apiKey = process.env.GOOGLE_API_KEY
