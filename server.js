@@ -3,7 +3,22 @@ require('isomorphic-fetch')
 
 const express = require('express')
 const cors = require('cors')
+const redis = require('redis')
+
 const app = express()
+const client = redis.createClient()
+
+const cacheExpiry = 30 * 60
+const cacheMiddleware = (req, res, next) => {
+	client.get(req.path, (err, cache) => {
+		if (cache) {
+			res.send(JSON.parse(cache))
+		} else {
+			next()
+		}
+	})
+}
+
 
 app.use(cors())
 
@@ -16,7 +31,7 @@ if (!apiKey) {
 
 const youtubeVideoParams = `key=${apiKey}&channelId=UCOHAJNSpYjS9_Hdho3LS7Fw&part=id,snippet&order=date&maxResults=20`
 
-app.get('/playlists', function (req, res) {
+app.get('/playlists', cacheMiddleware, (req, res) => {
 	fetch(`${googleApiUrl}playlists?${youtubeVideoParams}`)
 		.then(response => {
 			return response.json()
@@ -30,11 +45,12 @@ app.get('/playlists', function (req, res) {
 				}))
 				.reverse()
 
+			client.setex(req.path, cacheExpiry, JSON.stringify(playlists))
 			res.send(playlists)
 	})
 })
 
-app.get('/:playlistId/list', function (req, res) {
+app.get('/:playlistId/list', cacheMiddleware, (req, res) => {
 	const { playlistId } = req.params
 
 	fetch(`${googleApiUrl}playlistItems?${youtubeVideoParams}&playlistId=${playlistId}`)
@@ -50,6 +66,7 @@ app.get('/:playlistId/list', function (req, res) {
 					desc: snippet.description
 				}))
 
+			client.setex(req.path, cacheExpiry, JSON.stringify(videos))
 			res.send(videos)
 	})
 })
