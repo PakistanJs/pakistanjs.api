@@ -5,7 +5,7 @@ import { createFromDefaultSchema, createURIFrom } from './defaults'
 
 const SectionSchema = createFromDefaultSchema({
   name: String,
-  uri: { type: String, unique: true},
+  uri: { type: String, unique: true },
   desc: String,
   topics: [Schema.Types.ObjectId]
 })

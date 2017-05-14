@@ -3,8 +3,10 @@ const Schema = mongoose.Schema
 import { createFromDefaultSchema, createURIFrom } from './defaults'
 
 const TopicSchema = createFromDefaultSchema({
-  name: String,
+  title: { type: String, required: true},
   uri: { type: String, unique: true},
+  videoId: { type: String, required: true, unique: true},
+  videoUrl: { type: String, required: true },
   desc: String,
   jsbin: String,
   references: [String],
@@ -13,14 +15,18 @@ const TopicSchema = createFromDefaultSchema({
 
 
 TopicSchema.pre('save', function (next) {
-  this.uri = createURIFrom(this.name, 'topic_')
+  this.uri = createURIFrom(this.title, 'topic_', 20, `_${this.videoId}`)
   next()
 })
 
 const Topic = mongoose.model('Topic', TopicSchema)
 
 async function saveTopic(obj) {
-  return await Topic(obj).save()
+  try {
+    return await Topic(obj).save()
+  } catch(e) {
+    console.log(e)
+  }
 }
 
 async function getTopic(uri) {
@@ -31,7 +37,25 @@ async function getTopic(uri) {
   }
 }
 
+async function getTopics() {
+  try {
+    return await Topic.find({})
+  } catch(e) {
+    console.log(e)
+  }
+}
+
+async function insertTopics(topics) {
+  try {
+    topics.forEach(saveTopic)
+  } catch(e) {
+    console.log(e)
+  }
+}
+
 export default {
   saveTopic,
-  getTopic
+  getTopic,
+  getTopics,
+  insertTopics
 }

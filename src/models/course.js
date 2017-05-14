@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 import { createFromDefaultSchema, createURIFrom } from './defaults'
 
 const CourseSchema = createFromDefaultSchema({
-  name: String,
+  name: { type: String, required: true, unique: true},
   uri: { type: String, unique: true},
   desc: String,
   thumb: String,
@@ -12,7 +12,7 @@ const CourseSchema = createFromDefaultSchema({
 })
 
 CourseSchema.pre('save', function (next) {
-  this.uri = createURIFrom(this.name, 'course_')
+  this.uri = createURIFrom(this.name, 'course_', 20, '')
   next()
 })
 
@@ -24,7 +24,15 @@ async function saveCourse(obj) {
 
 async function getCourse(uri) {
   try {
-    return await Course.findOne({ uri: uri })
+    return await Course.findOne({ uri: uri }, '-_id name uri desc thumb sections')
+  } catch(e) {
+    console.log(e)
+  }
+}
+
+async function getCourses() {
+  try {
+    return await Course.find({}, '-_id name uri desc thumb sections')
   } catch(e) {
     console.log(e)
   }
@@ -32,5 +40,6 @@ async function getCourse(uri) {
 
 export default {
   saveCourse,
-  getCourse
+  getCourse,
+  getCourses
 }

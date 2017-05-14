@@ -7,18 +7,29 @@ const User = mongoose.model('User', {
   email: String,
   location: String,
   id: Number,
-  avatar_url: String,
+  avatarUrl: String,
   company: String,
-  access_token: String
+  accessToken: String,
+  isAdmin: { type: Boolean, default: false }
 })
 
 async function saveUser(user) {
-  return await new User(user).save()
+  const savedUser = await new User(user).save()
+
+  return {
+    name: savedUser.name,
+    username: savedUser.username,
+    email: savedUser.email,
+    location: savedUser.location,
+    avatarUrl: savedUser.avatarUrl,
+    company: savedUser.company,
+    isAdmin: savedUser.isAdmin
+  }
 }
 
 async function getUser(email) {
   try {
-    return await User.findOne({ email: email }, 'name username email location avatar_url company')
+    return await User.findOne({ email: email }, 'name username email location avatarUrl company isAdmin')
   } catch(e) {
     console.log(e)
   }
