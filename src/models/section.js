@@ -7,7 +7,10 @@ const SectionSchema = createFromDefaultSchema({
   name: String,
   uri: { type: String, unique: true },
   desc: String,
-  topics: [Schema.Types.ObjectId]
+  topics: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Topic'
+  }]
 })
 
 SectionSchema.pre('save', function (next) {

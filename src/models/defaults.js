@@ -13,5 +13,5 @@ export function createFromDefaultSchema(schema) {
 
 export function createURIFrom(prop, prefix, limit, suffix) {
 	const uriFromProp = prop.replace(/[^\w]+/gi, '_').toLowerCase()
-	return `${prefix}${uriFromProp.substr(0, limit)}${suffix}`
+	return `${prefix}${uriFromProp.substr(0, limit)}${suffix || ''}`
 }

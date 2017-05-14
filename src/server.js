@@ -187,13 +187,28 @@ app.get('/courses', async function(req, res) {
 	}
 })
 
-app.post('/course/section/add', async function(req, res) {
+app.get('/course/:uri', async function(req, res) {
 	try {
+		const course = await models.course.getCourse(req.params.uri)
+		res.send(course)
+	} catch (e) {
+		console.log(e)
+	}
+})
+
+app.post('/course/:uri/section/add', async function(req, res) {
+	try {
+		const courseURI = req.params.uri
 		const section = req.body
 		const savedSection = await models.section.saveSection(section)
-		res.send(savedSection)
+		console.log(savedSection)
+		console.log(courseURI)
+		const updatedCourse = await models.course.updateCourse(courseURI,
+			{ $push: { sections: savedSection._id } }
+		)
+		res.send(updatedCourse)
 	} catch (e) {
-		res.status(400).send({ error: e.code && e.code === 11000 ? 'section with this name already exist' : 'could not add this section' })
+		res.status(400).send({ error: e.code && e.code === 11000 ? 'section with this name already exist' : e.message })
 	}
 })
 

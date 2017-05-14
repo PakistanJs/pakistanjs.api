@@ -8,7 +8,10 @@ const CourseSchema = createFromDefaultSchema({
   uri: { type: String, unique: true},
   desc: String,
   thumb: String,
-  sections: [Schema.Types.ObjectId]
+  sections: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Section'
+  }]
 })
 
 CourseSchema.pre('save', function (next) {
@@ -19,12 +22,28 @@ CourseSchema.pre('save', function (next) {
 const Course = mongoose.model('Course', CourseSchema)
 
 async function saveCourse(obj) {
-  return await Course(obj).save()
+  try {
+    return await new Course(obj).save()
+  } catch (e) {
+    console.log (e)
+  }
+}
+
+async function updateCourse(uri, course) {
+  try {
+    return await Course
+      .findOneAndUpdate({ uri: uri }, course, { new: true })
+      .populate('sections')
+  } catch (e) {
+    console.log (e)
+  }
 }
 
 async function getCourse(uri) {
   try {
-    return await Course.findOne({ uri: uri }, '-_id name uri desc thumb sections')
+    return await Course
+      .findOne({ uri: uri }, '-_id name uri desc thumb sections')
+      .populate('sections')
   } catch(e) {
     console.log(e)
   }
@@ -32,7 +51,9 @@ async function getCourse(uri) {
 
 async function getCourses() {
   try {
-    return await Course.find({}, '-_id name uri desc thumb sections')
+    return await Course
+      .find({}, '-_id name uri desc thumb sections')
+      .populate('sections')
   } catch(e) {
     console.log(e)
   }
@@ -40,6 +61,7 @@ async function getCourses() {
 
 export default {
   saveCourse,
+  updateCourse,
   getCourse,
   getCourses
 }
