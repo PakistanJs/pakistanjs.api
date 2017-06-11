@@ -22,11 +22,7 @@ TopicSchema.pre('save', function (next) {
 const Topic = mongoose.model('Topic', TopicSchema)
 
 async function saveTopic(obj) {
-  try {
-    return await Topic(obj).save()
-  } catch(e) {
-    console.log(e)
-  }
+  return await Topic(obj).save()
 }
 
 async function getTopic(uri) {

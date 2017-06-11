@@ -187,22 +187,20 @@ app.get('/courses', async function(req, res) {
 	}
 })
 
-app.get('/course/:uri', async function(req, res) {
+app.get('/course/:courseURI', async function(req, res) {
 	try {
-		const course = await models.course.getCourse(req.params.uri)
+		const course = await models.course.getCourse(req.params.courseURI)
 		res.send(course)
 	} catch (e) {
 		console.log(e)
 	}
 })
 
-app.post('/course/:uri/section/add', async function(req, res) {
+app.post('/course/:courseURI/section/add', async function(req, res) {
 	try {
-		const courseURI = req.params.uri
+		const courseURI = req.params.courseURI
 		const section = req.body
 		const savedSection = await models.section.saveSection(section)
-		console.log(savedSection)
-		console.log(courseURI)
 		const updatedCourse = await models.course.updateCourse(courseURI,
 			{ $push: { sections: savedSection._id } }
 		)
@@ -212,10 +210,26 @@ app.post('/course/:uri/section/add', async function(req, res) {
 	}
 })
 
-app.get('/course/sections', async function(req, res) {
+app.get('/course/:courseURI/:sectionURI', async function(req, res) {
 	try {
-		const courses = await models.course.getCourses()
-		res.send(courses)
+		const { courseURI, sectionURI } = req.params
+		const section = await models.section.getSection(sectionURI)
+		res.send(section)
+	} catch (e) {
+		console.log(e)
+	}
+})
+
+app.post('/section/:sectionURI/topic/add', async function(req, res) {
+	try {
+		const { sectionURI } = req.params
+		const topic = req.body
+		const savedTopic = await models.topic.saveTopic(topic)
+		console.log(savedTopic)
+		const updatedSection = await models.section.updateSection(sectionURI,
+			{ $push: { topics: savedTopic._id } }
+		)
+		res.send(updatedSection)
 	} catch (e) {
 		console.log(e)
 	}

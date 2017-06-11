@@ -26,13 +26,25 @@ async function saveSection(obj) {
 
 async function getSection(uri) {
   try {
-    return await Section.findOne({ uri: uri })
+    return await Section.findOne({ uri: uri }).populate('sections').populate('topics')
   } catch(e) {
     console.log(e)
   }
 }
 
+async function updateSection(uri, section) {
+  try {
+    return await Section
+      .findOneAndUpdate({ uri: uri }, section, { new: true })
+      .populate('topics')
+  } catch (e) {
+    console.log (e)
+  }
+}
+
+
 export default {
   saveSection,
-  getSection
+  getSection,
+  updateSection
 }
