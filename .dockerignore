@@ -1,0 +1,5 @@
+node_modules
+npm-debug.log
+*.md
+!README*.md
+README-secret.md
